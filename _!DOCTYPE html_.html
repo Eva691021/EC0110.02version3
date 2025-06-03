@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario Diagnóstico EC0110.02 - Montealegre Bienes Raíces</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f8f8; /* Light gray background */
+            color: #333;
+        }
+
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Custom styles for buttons and inputs */
+        .btn-primary {
+            @apply bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105;
+        }
+
+        .btn-secondary {
+            @apply bg-yellow-500 text-gray-900 font-bold py-3 px-6 rounded-lg shadow-md hover:bg-yellow-600 transition duration-300 ease-in-out transform hover:scale-105;
+        }
+
+        .input-field {
+            @apply w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out;
+        }
+
+        .card {
+            @apply bg-white p-8 rounded-xl shadow-lg border border-gray-200;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-close-button {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close-button:hover,
+        .modal-close-button:focus {
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-message {
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* New class for hiding elements during print */
+        .hidden-for-print {
+            display: none !important;
+        }
+
+        /* Print styles */
+        @media print {
+            body > *:not(#receiptSection) {
+                display: none !important;
+            }
+            #receiptSection {
+                display: block !important; /* Ensure receipt section is visible */
+                position: absolute; /* Position for print */
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: auto;
+                margin: 0;
+                padding: 20px; /* Add some padding for print */
+                box-shadow: none;
+                border: none;
+                background-color: white; /* Ensure white background for print */
+            }
+            /* Adjust font size for print if needed */
+            body {
+                font-size: 12pt;
+            }
+            /* Ensure logos are visible in print and not distorted */
+            #receiptSection img {
+                display: inline-block !important;
+                height: auto !important; /* Override fixed height for print */
+                border-radius: initial !important; /* Remove border-radius for Montealegre logo */
+            }
+            #receiptSection img[alt="Logo Montealegre"] {
+                height: 80px !important; /* Match CONOCER logo height for print */
+                width: auto !important; /* Maintain aspect ratio */
+            }
+            #receiptSection img[alt="Logo CONOCER"] {
+                border-radius: 9999px !important; /* Keep CONOCER logo circular */
+                height: 80px !important; /* Specific height for CONOCER logo */
+                width: 80px !important; /* Specific width for CONOCER logo */
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <audio id="correctSound" src="https://www.soundjay.com/buttons/button-3.mp3" preload="auto"></audio>
+    <audio id="incorrectSound" src="https://www.soundjay.com/buttons/button-12.mp3" preload="auto"></audio>
+
+    <div id="myModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="modal-close-button" onclick="closeModal()">&times;</span>
+            <p id="modalMessage" class="modal-message"></p>
+            <button class="btn-primary" onclick="closeModal()">Aceptar</button>
+        </div>
+    </div>
+
+    <header class="bg-blue-800 text-white p-6 shadow-xl">
+        <div class="container mx-auto flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
+            <div class="flex items-center space-x-4">
+                <img src="https://github.com/Eva691021/EC0110.02/blob/main/WhatsApp%20Image%202024-02-22%20at%2010.47.05%20PM.jpeg?raw=true" alt="Logo Montealegre" class="h-16 w-auto">
+                <img src="https://www.gob.mx/cms/uploads/article/main_image/62906/conocer.jpg" alt="Logo CONOCER" class="h-16 w-16 rounded-full shadow-md">
+            </div>
+            <div class="text-center md:text-right">
+                <h1 class="text-4xl font-extrabold tracking-tight mb-2">Montealegre Bienes Raíces</h1>
+                <p class="text-xl font-light">Certificación EC0110.02 Asesoría en la Comercialización de Bienes Inmuebles</p>
+            </div>
+        </div>
+        <div class="container mx-auto mt-6 p-4 bg-blue-700 rounded-lg shadow-inner">
+            <h2 class="text-2xl font-semibold mb-3">Misión</h2>
+            <p class="text-lg mb-4">Empoderar a profesionales inmobiliarios con conocimientos y habilidades de vanguardia, promoviendo la ética y la excelencia en el sector.</p>
+
+            <h2 class="text-2xl font-semibold mb-3">Visión</h2>
+            <p class="text-lg mb-4">Ser el referente nacional en la formación y certificación de asesores inmobiliarios, contribuyendo al desarrollo de un mercado transparente y eficiente.</p>
+
+            <h2 class="text-2xl font-semibold mb-3">Valores</h2>
+            <ul class="list-disc list-inside text-lg mb-4 space-y-1">
+                <li>Integridad y Ética profesional</li>
+                <li>Excelencia y Calidad en la formación</li>
+                <li>Compromiso con el desarrollo de nuestros estudiantes</li>
+                <li>Innovación y Adaptación a las tendencias del mercado</li>
+            </ul>
+
+            <h2 class="text-2xl font-semibold mb-3">Objetivo del Curso</h2>
+            <p class="text-lg">Proporcionar a los participantes las herramientas y conocimientos necesarios para desempeñarse eficazmente en la comercialización de bienes inmuebles, preparándolos para obtener la certificación EC0110.02.</p>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto p-6">
+
+        <section id="registrationSection" class="card max-w-2xl mx-auto my-10">
+            <h2 class="text-3xl font-bold text-center text-blue-700 mb-6">Registro Inicial</h2>
+            <form id="registrationForm" class="space-y-6">
+                <div>
+                    <label for="name" class="block text-lg font-medium text-gray-700 mb-2">Nombre Completo:</label>
+                    <input type="text" id="name" name="name" required class="input-field">
+                </div>
+                <div>
+                    <label for="email" class="block text-lg font-medium text-gray-700 mb-2">Correo Electrónico:</label>
+                    <input type="email" id="email" name="email" required class="input-field">
+                </div>
+                <div>
+                    <label for="phone" class="block text-lg font-medium text-gray-700 mb-2">Teléfono:</label>
+                    <input type="tel" id="phone" name="phone" required class="input-field">
+                </div>
+                <button type="submit" class="btn-primary w-full">Iniciar Cuestionario</button>
+            </form>
+        </section>
+
+        <section id="quizSection" class="card max-w-3xl mx-auto my-10 hidden">
+            <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">Cuestionario Diagnóstico</h2>
+            <div id="questionContainer" class="space-y-6">
+                </div>
+            <div class="mt-8 text-center">
+                <button id="actionButton" class="btn-primary w-full md:w-auto hidden" disabled>Validar Respuesta</button>
+            </div>
+        </section>
+
+        <section id="resultsSection" class="card max-w-2xl mx-auto my-10 hidden">
+            <h2 class="text-3xl font-bold text-center text-blue-700 mb-6">Resultados del Cuestionario</h2>
+            <p class="text-2xl text-center mb-6">Aciertos: <span id="scoreDisplay" class="font-extrabold text-blue-600">0</span> / 21</p>
+            <div class="bg-blue-50 p-6 rounded-lg border border-blue-200 shadow-inner">
+                <p class="text-lg font-semibold text-blue-800 mb-4">Para que usted pueda tomar una decisión acerca de su ingreso al proceso de certificación tome en cuenta las siguientes recomendaciones:</p>
+                <ul class="list-disc list-inside text-gray-800 space-y-3">
+                    <li><span class="font-bold text-blue-600">➢</span> Si el resultado de respuestas CORRECTAS es de <span class="font-bold">19 en adelante</span> se recomienda que solicite su evaluación.</li>
+                    <li><span class="font-bold text-blue-600">➢</span> Si el resultado es <span class="font-bold">menor a 18</span> se recomienda que solicite orientación al centro de evaluación para que se le proporcione información sobre la oferta de capacitación a la que puede acceder para dominar completamente el Estándar de Competencia Laboral.</li>
+                </ul>
+            </div>
+            <div id="enrollmentPrompt" class="mt-8 text-center hidden">
+                <p class="text-xl font-semibold text-green-700 mb-4">¡Felicidades! Cumples con el puntaje para inscribirte.</p>
+                <button id="showEnrollmentFormBtn" class="btn-primary">Inscribirse Ahora</button>
+            </div>
+        </section>
+
+        <section id="enrollmentSection" class="card max-w-3xl mx-auto my-10 hidden">
+            <h2 class="text-3xl font-bold text-center text-blue-700 mb-6">Formulario de Inscripción</h2>
+            <form id="enrollmentForm" class="space-y-6">
+                <div>
+                    <label for="curp" class="block text-lg font-medium text-gray-700 mb-2">CURP:</label>
+                    <input type="text" id="curp" name="curp" required class="input-field uppercase" pattern="[A-Z]{4}[0-9]{6}[H,M][A-Z]{5}[0-9]{2}" title="Formato CURP: 4 letras, 6 números, H/M, 5 letras, 2 números">
+                </div>
+                <div>
+                    <label for="course" class="block text-lg font-medium text-gray-700 mb-2">Selección del Curso:</label>
+                    <select id="course" name="course" required class="input-field">
+                        <option value="">Seleccione un curso</option>
+                        <option value="Certificación en Comercialización Inmobiliaria">Certificación en Comercialización Inmobiliaria</option>
+                        <option value="Certificación en Productos de Crédito INFONAVIT">Certificación en Productos de Crédito INFONAVIT</option>
+                        <option value="Certificación en Servicio al Cliente">Certificación en Servicio al Cliente</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="modality" class="block text-lg font-medium text-gray-700 mb-2">Modalidad:</label>
+                    <select id="modality" name="modality" required class="input-field">
+                        <option value="">Seleccione una modalidad</option>
+                        <option value="Presencial">Presencial</option>
+                        <option value="Virtual">Virtual</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="enrollmentEmail" class="block text-lg font-medium text-gray-700 mb-2">Correo Electrónico:</label>
+                    <input type="email" id="enrollmentEmail" name="enrollmentEmail" required class="input-field">
+                </div>
+                <div>
+                    <label for="city" class="block text-lg font-medium text-gray-700 mb-2">Ciudad:</label>
+                    <input type="text" id="city" name="city" required class="input-field">
+                </div>
+                <div>
+                    <label for="state" class="block text-lg font-medium text-gray-700 mb-2">Estado:</label>
+                    <select id="state" name="state" required class="input-field">
+                        <option value="">Seleccione un estado</option>
+                        </select>
+                </div>
+                <div>
+                    <label for="comments" class="block text-lg font-medium text-gray-700 mb-2">Comentarios:</label>
+                    <textarea id="comments" name="comments" rows="4" class="input-field"></textarea>
+                </div>
+                <div>
+                    <label for="paymentProof" class="block text-lg font-medium text-gray-700 mb-2">Adjuntar comprobante de pago (.pdf o .png):</label>
+                    <input type="file" id="paymentProof" name="paymentProof" accept=".pdf,.png" class="input-field p-2">
+                </div>
+                <button type="submit" class="btn-primary w-full">Enviar Inscripción</button>
+            </form>
+        </section>
+
+    </main>
+
+    <section id="receiptSection" class="hidden p-8 bg-white rounded-xl shadow-lg border border-gray-200 mx-auto my-10 max-w-3xl">
+        <div class="text-center mb-8">
+            <div class="flex justify-center items-center space-x-4 mb-4">
+                <img src="https://github.com/Eva691021/EC0110.02/blob/main/WhatsApp%20Image%202024-02-22%20at%2010.47.05%20PM.jpeg?raw=true" alt="Logo Montealegre" class="h-20 w-auto">
+                <img src="https://www.gob.mx/cms/uploads/article/main_image/62906/conocer.jpg" alt="Logo CONOCER" class="h-20 w-20 rounded-full">
+            </div>
+            <h2 class="text-3xl font-bold text-blue-700 mb-2">Comprobante de Inscripción</h2>
+            <p id="receiptDate" class="text-gray-600 text-lg"></p>
+        </div>
+
+        <div class="space-y-4 text-lg text-gray-800">
+            <h3 class="font-semibold text-blue-700 border-b pb-2 mb-4">Datos del Candidato:</h3>
+            <p><strong>Nombre Completo:</strong> <span id="receiptName"></span></p>
+            <p><strong>Correo Electrónico:</strong> <span id="receiptEmail"></span></p>
+            <p><strong>Teléfono:</strong> <span id="receiptPhone"></span></p>
+
+            <h3 class="font-semibold text-blue-700 border-b pb-2 mb-4 mt-6">Detalles de la Inscripción:</h3>
+            <p><strong>CURP:</strong> <span id="receiptCurp"></span></p>
+            <p><strong>Curso Seleccionado:</strong> <span id="receiptCourse"></span></p>
+            <p><strong>Modalidad:</strong> <span id="receiptModality"></span></p>
+            <p><strong>Ciudad:</strong> <span id="receiptCity"></span></p>
+            <p><strong>Estado:</strong> <span id="receiptState"></span></p>
+            <p><strong>Comprobante de Pago:</strong> <span id="receiptPaymentProof"></span></p>
+            <p><strong>Comentarios:</strong> <span id="receiptComments"></span></p>
+        </div>
+    </section>
+
+    <footer class="bg-blue-800 text-white p-6 mt-10 shadow-inner">
+        <div class="container mx-auto text-center">
+            <p class="text-lg mb-4">Conéctate con nosotros:</p>
+            <div class="flex justify-center space-x-6">
+                <a href="https://www.facebook.com/profile.php?id=61564018651623" target="_blank" class="text-white hover:text-yellow-400 transition-colors duration-300">
+                    <i class="fab fa-facebook-f fa-2x"></i>
+                </a>
+                <a href="https://www.instagram.com/montealegrebrpachuca" target="_blank" class="text-white hover:text-yellow-400 transition-colors duration-300">
+                    <i class="fab fa-instagram fa-2x"></i>
+                </a>
+                <a href="https://www.tiktok.com/@montealegrebrpachuca" target="_blank" class="text-white hover:text-yellow-400 transition-colors duration-300">
+                    <i class="fab fa-tiktok fa-2x"></i>
+                </a>
+                <a href="https://wa.me/527712153386" target="_blank" class="text-white hover:text-yellow-400 transition-colors duration-300">
+                    <i class="fab fa-whatsapp fa-2x"></i>
+                </a>
+            </div>
+            <p class="mt-6 text-sm">&copy; 2025 Montealegre BR Pachuca. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Global variables for questionnaire state and user data
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userData = {};
+        let enrollmentData = {};
+        // Flag to track if the current question has been validated and scored
+        let currentQuestionValidated = false; 
+
+        // Audio elements
+        const correctSound = document.getElementById('correctSound');
+        const incorrectSound = document.getElementById('incorrectSound');
+
+        // DOM elements
+        const registrationSection = document.getElementById('registrationSection');
+        const quizSection = document.getElementById('quizSection');
+        const resultsSection = document.getElementById('resultsSection');
+        const enrollmentSection = document.getElementById('enrollmentSection');
+        const registrationForm = document.getElementById('registrationForm');
+        const questionContainer = document.getElementById('questionContainer');
+        // Renamed nextQuestionBtn to actionButton for dynamic behavior
+        const actionButton = document.getElementById('actionButton'); 
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const enrollmentPrompt = document.getElementById('enrollmentPrompt');
+        const showEnrollmentFormBtn = document.getElementById('showEnrollmentFormBtn');
+        const enrollmentForm = document.getElementById('enrollmentForm');
+        const stateSelect = document.getElementById('state');
+
+        // Modal elements
+        const myModal = document.getElementById('myModal');
+        const modalMessage = document.getElementById('modalMessage');
+
+        // Function to show the modal
+        function showModal(message) {
+            modalMessage.textContent = message;
+            myModal.classList.remove('hidden');
+        }
+
+        // Function to close the modal
+        function closeModal() {
+            myModal.classList.add('hidden');
+        }
+
+        // List of Mexican states
+        const mexicanStates = [
+            "Aguascalientes", "Baja California", "Baja California Sur", "Campeche", "Chiapas",
+            "Chihuahua", "Coahuila de Zaragoza", "Colima", "Ciudad de México", "Durango",
+            "Guanajuato", "Guerrero", "Hidalgo", "Jalisco", "México", "Michoacán de Ocampo",
+            "Morelos", "Nayarit", "Nuevo León", "Oaxaca", "Puebla", "Querétaro", "Quintana Roo",
+            "San Luis Potosí", "Sinaloa", "Sonora", "Tabasco", "Tamaulipas", "Tlaxcala",
+            "Veracruz de Ignacio de la Llave", "Yucatán", "Zacatecas"
+        ];
+
+        // Populate states dropdown
+        function populateStates() {
+            mexicanStates.forEach(state => {
+                const option = document.createElement('option');
+                option.value = state;
+                option.textContent = state;
+                stateSelect.appendChild(option);
+            });
+        }
+
+        // Questionnaire questions
+        const questions = [
+            {
+                question: "1.- Ordena las siguientes actividades que se relacionan a continuación para prospectar el bien inmueble para compraventa/arrendamiento: \n\n( ) Acordando una cita con el prospecto vendedor para ofrecer los servicios de intermediación inmobiliaria.\n( ) Contestando todas las dudas/inquietudes presentadas por el prospecto vendedor respecto a la compraventa/ arrendamiento.\n( ) Solicitando los datos generales del prospecto vendedor y del bien inmueble.\n( ) Estableciendo el contacto inicial de manera telefónica/virtual/presencial con el prospecto vendedor.\n( ) Utilizando técnica/técnicas de prospección para identificar bienes inmuebles sujetos a comercialización.",
+                options: [
+                    "1) Utilizando técnica/técnicas de prospección para identificar bienes inmuebles sujetos a comercialización.\n2) Estableciendo el contacto inicial de manera telefónica/virtual/presencial con el prospecto vendedor.\n3) Solicitando los datos generales del prospecto vendedor y del bien inmueble.\n4) Acordando una cita con el prospecto vendedor para ofrecer los servicios de intermediación inmobiliaria.\n5) Contestando todas las dudas/inquietudes presentadas por el prospecto vendedor respecto a la compraventa/ arrendamiento.",
+                    "1) Estableciendo el contacto inicial de manera telefónica/virtual/presencial con el prospecto vendedor.\n2) Utilizando técnica/técnicas de prospección para identificar bienes inmuebles sujetos a comercialización.\n3) Acordando una cita con el prospecto vendedor para ofrecer los servicios de intermediación inmobiliaria.\n4) Solicitando los datos generales del prospecto vendedor y del bien inmueble.\n5) Contestando todas las dudas/inquietudes presentadas por el prospecto vendedor respecto a la compraventa/ arrendamiento.",
+                    "1) Solicitando los datos generales del prospecto vendedor y del bien inmueble.\n2) Acordando una cita con el prospecto vendedor para ofrecer los servicios de intermediación inmobiliaria.\n3) Estableciendo el contacto inicial de manera telefónica/virtual/presencial con el prospecto vendedor.\n4) Utilizando técnica/técnicas de prospección para identificar bienes inmuebles sujetos a comercialización.\n5) Contestando todas las dudas/inquietudes presentadas por el prospecto vendedor respecto a la compraventa/ arrendamiento."
+                ],
+                answer: "1) Utilizando técnica/técnicas de prospección para identificar bienes inmuebles sujetos a comercialización.\n2) Estableciendo el contacto inicial de manera telefónica/virtual/presencial con el prospecto vendedor.\n3) Solicitando los datos generales del prospecto vendedor y del bien inmueble.\n4) Acordando una cita con el prospecto vendedor para ofrecer los servicios de intermediación inmobiliaria.\n5) Contestando todas las dudas/inquietudes presentadas por el prospecto vendedor respecto a la compraventa/ arrendamiento.",
+                type: "multiple-choice"
+            },
+            {
+                question: "2.- Ordena las siguientes actividades que se relacionan en obtener información del prospecto vendedor: \n\n( ) Preguntando al prospecto vendedor acerca de la situación legal del inmueble.\n( ) Preguntando al prospecto vendedor su estado civil actual y el que tenía al momento de adquirir el inmueble.\n( ) Solicitando al prospecto vendedor su documentación personal y la documentación del bien inmueble para generar la estimación del valor comercial.\n( ) Corroborando en los documentos presentados por el prospecto vendedor que el inmueble se encuentra al corriente en sus contribuciones fiscales.\n( ) Cotejando en la escritura/copia certificada de la escritura del inmueble presentada, si el prospecto vendedor es el titular de la propiedad.\n( ) Verificando y registrando las condiciones físicas y los aditamentos básicos requeridos que presenta el inmueble, mediante un recorrido.",
+                options: [
+                    "1) Solicitando al prospecto vendedor su documentación personal y la documentación del bien inmueble para generar la estimación del valor comercial.\n2) Preguntando al prospecto vendedor acerca de la situación legal del inmueble.\n3) Preguntando al prospecto vendedor su estado civil actual y el que tenía al momento de adquirir el inmueble.\n4) Corroborando en los documentos presentados por el prospecto vendedor que el inmueble se encuentra al corriente en sus contribuciones fiscales.\n5) Cotejando en la escritura/copia certificada de la escritura del inmueble presentada, si el prospecto vendedor es el titular de la propiedad.\n6) Verificando y registrando las condiciones físicas y los aditamentos básicos requeridos que presenta el inmueble, mediante un recorrido.",
+                    "1) Preguntando al prospecto vendedor acerca de la situación legal del inmueble.\n2) Preguntando al prospecto vendedor su estado civil actual y el que tenía al momento de adquirir el inmueble.\n3) Solicitando al prospecto vendedor su documentación personal y la documentación del bien inmueble para generar la estimación del valor comercial.\n4) Verificando y registrando las condiciones físicas y los aditamentos básicos requeridos que presenta el inmueble, mediante un recorrido.\n5) Corroborando en los documentos presentados por el prospecto vendedor que el inmueble se encuentra al corriente en sus contribuciones fiscales.\n6) Cotejando en la escritura/copia certificada de la escritura del inmueble presentada, si el prospecto vendedor es el titular de la propiedad.",
+                    "1) Verificando y registrando las condiciones físicas y los aditamentos básicos requeridos que presenta el inmueble, mediante un recorrido.\n2) Solicitando al prospecto vendedor su documentación personal y la documentación del bien inmueble para generar la estimación del valor comercial.\n3) Preguntando al prospecto vendedor acerca de la situación legal del inmueble.\n4) Preguntando al prospecto vendedor su estado civil actual y el que tenía al momento de adquirir el inmueble.\n5) Corroborando en los documentos presentados por el prospecto vendedor que el inmueble se encuentra al corriente en sus contribuciones fiscales.\n6) Cotejando en la escritura/copia certificada de la escritura del inmueble presentada, si el prospecto vendedor es el titular de la propiedad."
+                ],
+                answer: "1) Preguntando al prospecto vendedor acerca de la situación legal del inmueble.\n2) Preguntando al prospecto vendedor su estado civil actual y el que tenía al momento de adquirir el inmueble.\n3) Solicitando al prospecto vendedor su documentación personal y la documentación del bien inmueble para generar la estimación del valor comercial.\n4) Verificando y registrando las condiciones físicas y los aditamentos básicos requeridos que presenta el inmueble, mediante un recorrido.\n5) Corroborando en los documentos presentados por el prospecto vendedor que el inmueble se encuentra al corriente en sus contribuciones fiscales.\n6) Cotejando en la escritura/copia certificada de la escritura del inmueble presentada, si el prospecto vendedor es el titular de la propiedad.",
+                type: "multiple-choice"
+            },
+            {
+                question: "3.- De las siguientes obligaciones fiscales de la compraventa del bien inmueble, indique cuales corresponden a: Un inmueble de uso mixto:",
+                options: ["Impuesto especial sobre producción y servicios", "Impuesto sobre la renta por adquisición", "Impuesto sobre enajenación", "Impuesto al valor agregado"],
+                answer: "Impuesto al valor agregado",
+                type: "multiple-choice"
+            },
+            {
+                question: "4.- Un inmueble de uso habitacional:",
+                options: ["Impuesto sobre traslado de dominio / ISAI / ISABI", "Impuesto sobre la renta por enajenación", "Impuesto sobre cuota anual de administración", "Impuesto al valor agregado"],
+                answer: "Impuesto sobre traslado de dominio / ISAI / ISABI",
+                type: "multiple-choice"
+            },
+            {
+                question: "5.- La opinión de valor del bien inmueble es el resultado del promedio de los valores, del comparativo del mercado y de la capitalización de rentas.",
+                options: ["Verdadero", "Falso"],
+                answer: "Falso",
+                type: "true-false"
+            },
+            {
+                question: "6.- Se debe entregar por escrito la opinión del posible valor al prospecto vendedor/arrendatario.",
+                options: ["Verdadero", "Falso"],
+                answer: "Verdadero",
+                type: "true-false"
+            },
+            {
+                question: "7.- La capitalización de rentas es un estudio de mercado mediante el cual se determina el valor del inmueble a través del monto estimado de la renta mensual del mismo.",
+                options: ["Verdadero", "Falso"],
+                answer: "Verdadero",
+                type: "true-false"
+            },
+            {
+                question: "8.- No será necesario solicitar al prospecto vendedor/arrendatario la autorización del uso de sus datos personales a través del aviso de privacidad.",
+                options: ["Verdadero", "Falso"],
+                answer: "Falso",
+                type: "true-false"
+            },
+            {
+                question: "9.- Se debe recabar la firma del prospecto vendedor/arrendatario del acuse de entrega de la carta de derechos del consumidor.",
+                options: ["Verdadero", "Falso"],
+                answer: "Verdadero",
+                type: "true-false"
+            },
+            {
+                question: "10.- ¿Qué argumentos de venta deberías utilizar al momento de ofrecer el servicio de intermediación en exclusiva? Selecciona la opción correcta.",
+                options: [
+                    "Mencionar que se perfilará a los prospectos compradores / arrendatarios previa a la visita del inmueble reduciendo los riesgos al mostrar en inmueble.",
+                    "Entregando una descripción de los medios de promoción a utilizar para la compraventa/arrendamiento del bien inmueble.",
+                    "Explicando el resultado de la opinión del posible valor y la metodología utilizada para su cálculo.",
+                    "Recabando la firma de la carta de autorización para promocionar el bien inmueble.",
+                    "Garantizar el plazo de venta del bien inmueble."
+                ],
+                answer: "Mencionar que se perfilará a los prospectos compradores / arrendatarios previa a la visita del inmueble reduciendo los riesgos al mostrar en inmueble.",
+                type: "multiple-choice"
+            },
+            {
+                question: "11.- ¿Cuáles son los elementos relevantes del contrato de servicios de intermediación? Selecciona cuatro elementos de la siguiente lista.",
+                options: [
+                    "Los derechos, obligaciones y penalizaciones para las partes contratantes",
+                    "La vigencia del contrato de intermediación inmobiliaria",
+                    "Solicitando la firma del contrato de intermediación inmobiliaria",
+                    "Los honorarios del profesional inmobiliario y forma de pago",
+                    "La fecha compromiso de venta del inmueble",
+                    "El inmueble objeto del contrato"
+                ],
+                answer: [
+                    "Los derechos, obligaciones y penalizaciones para las partes contratantes",
+                    "La vigencia del contrato de intermediación inmobiliaria",
+                    "Los honorarios del profesional inmobiliario y forma de pago",
+                    "El inmueble objeto del contrato"
+                ],
+                type: "multiple-choice-multiple-answers"
+            },
+            {
+                question: "12.- Selecciona los derechos y gastos que deben de pagarse con motivo de la escrituración de la operación de compraventa. Selecciona la opción correcta.",
+                options: [
+                    "Pago por derechos de agua potable",
+                    "Inscripción en el Registro Público de la Propiedad",
+                    "Honorarios notariales",
+                    "Pago del impuesto predial",
+                    "Avalúo (en su caso)",
+                    "Certificado de libertad de gravamen",
+                    "Traslado de dominio"
+                ],
+                answer: [
+                    "Inscripción en el Registro Público de la Propiedad",
+                    "Honorarios notariales",
+                    "Avalúo (en su caso)",
+                    "Certificado de libertad de gravamen",
+                    "Traslado de dominio"
+                ],
+                type: "multiple-choice-multiple-answers"
+            },
+            {
+                question: "13.- La extinción de dominio es la pérdida de los derechos sobre los bienes, con una contraprestación o compensación para su dueño. La sentencia en la que se declare tendrá por efecto que los bienes se apliquen a favor del Estado.",
+                options: ["Verdadero", "Falso"],
+                answer: "Verdadero",
+                type: "true-false"
+            },
+            {
+                question: "14.- Los documentos que se enlistan a continuación son todos los que se solicitan al prospecto vendedor de un inmueble en condominio al iniciar el proceso de asesoría inmobiliaria. Comprobante de domicilio, Certificado de antigüedad del inmueble, Régimen de propiedad en condominio, Autorización notarial, Reglamento de condominio, Planos del inmueble, Últimos pagos de impuesto predial, servicio de agua y de luz, Certificado de la Secretaría de Ecología, Carta de no adeudo de mantenimiento.",
+                options: ["Verdadero", "Falso"],
+                answer: "Falso",
+                type: "true-false"
+            },
+            {
+                question: "15.- Los impuestos a pagar al momento de hacer una compra venta de un bien inmueble consideran los siguientes conceptos:",
+                options: ["a) ISR, honorarios notariales, Impuestos locales de cambio de propietario", "b) ISR, el pago de derechos, IVA en su caso.", "c) ISR, gastos, el pago de derechos y honorarios", "d) ISR, Impuestos locales de cambio de propietario, IVA en su caso"],
+                answer: "d) ISR, Impuestos locales de cambio de propietario, IVA en su caso",
+                type: "multiple-choice"
+            },
+            {
+                question: "16.- Cuando se enajena un bien inmueble causa el impuesto al valor agregado cuando:",
+                options: ["a) Se trata de un bien inmueble para uso habitacional", "b) Se trata de un bien inmueble para uso comercial", "c) Se trata de un bien inmueble en copropiedad", "d) Se trata de un bien inmueble con valor mayor a 700,000 UDIS"],
+                answer: "b) Se trata de un bien inmueble para uso comercial",
+                type: "multiple-choice"
+            },
+            {
+                question: "17.- De acuerdo con la Ley Federal del Impuesto sobre la Renta, cuando el valor catastral o de avalúo es superior al 10% del valor de la compra venta, el porcentaje a pagar por concepto del ISR por adquisición es del:",
+                options: ["a) 10% del excedente", "b) 16% del excedente", "c) 20% del excedente", "d) 30% del excedente"],
+                answer: "c) 20% del excedente",
+                type: "multiple-choice"
+            },
+            {
+                question: "18.- Son elementos que debe de cumplir la carta de derechos del vendedor hacia el consumidor de acuerdo con la NOM-247-SE-2021, 'Prácticas comerciales-requisitos de la información comercial y la publicidad de bienes inmuebles destinados a casa habitación y elementos mínimos que deben contener los contratos relacionados':",
+                options: [
+                    "a) Bonificaciones, aviso de privacidad que contengan los logos de las ONAVIS participantes.",
+                    "b) Garantías y bonificaciones en caso de incumplimientos, características del bien inmueble y un perfilamiento del bien inmueble claro y preciso.",
+                    "c) Elección libre del notario, el aviso de privacidad de datos y plazo y condiciones acordadas para la entrega del bien inmueble destinada a casa habitación."
+                ],
+                answer: "c) Elección libre del notario, el aviso de privacidad de datos y plazo y condiciones acordadas para la entrega del bien inmueble destinada a casa habitación.",
+                type: "multiple-choice"
+            },
+            {
+                question: "19.- Algunas de las responsabilidades y obligaciones establecidas en la NOM-247-SE-2021, en el manejo de la información dentro de la publicidad son:",
+                options: [
+                    "a) Contar con canales de comunicación para quejas y atención, poner a disposición el nombre comercial y razón social del proveedor y tener todos los contratos de adhesión y comercialización de cualquier tipo de inmueble.",
+                    "b) Informar precio del bien inmueble en la modalidad en que se encuentre, métodos de pago, especificaciones generales tales como ubicación, colindancia y medidas del bien inmueble.",
+                    "c) Contar con aviso de privacidad de datos, número de registro ante la PROFECO y carta de ofertas vinculantes."
+                ],
+                answer: "b) Informar precio del bien inmueble en la modalidad en que se encuentre, métodos de pago, especificaciones generales tales como ubicación, colindancia y medidas del bien inmueble.",
+                type: "multiple-choice"
+            },
+            {
+                question: "20.- ¿Qué tipo de contrato se debe de tener en adhesión con la PROFECO para promotores y demás personas que intervienen en la intermediación de bienes Inmuebles destinados a casa habitación?",
+                options: [
+                    "a) Contrato de adhesión de compraventa de terrenos.",
+                    "b) Contrato de adhesión de promesa o preparatorio de compraventa.",
+                    "c) Contrato de adhesión de intermediación para la adquisición de inmuebles destinados a casa habitación."
+                ],
+                answer: "c) Contrato de adhesión de intermediación para la adquisición de inmuebles destinados a casa habitación.",
+                type: "multiple-choice"
+            },
+            {
+                question: "21.- El manejo de Garantías en la compraventa de un bien inmueble destinado a casa habitación solo es necesario cuando:",
+                options: [
+                    "a) El inmueble presenta fallas graves en su estructura, en vicios ocultos o en impermeabilización.",
+                    "b) Cuando el inmueble es nuevo, la obligación es del vendedor.",
+                    "c) Cuando el inmueble y los plazos establecidos estén dentro de su garantía que establece la NOM 247."
+                ],
+                answer: "c) Cuando el inmueble y los plazos establecidos estén dentro de su garantía que establece la NOM 247.",
+                type: "multiple-choice"
+            }
+        ];
+
+        // Function to render the current question
+        function renderQuestion() {
+            const q = questions[currentQuestionIndex];
+            if (!q) {
+                // No more questions, show results
+                showResults();
+                return;
+            }
+
+            // Reset flag indicating if current question has been validated
+            currentQuestionValidated = false; 
+
+            let optionsHtml = '';
+            let instructionText = '';
+            
+            // Handle multiple-choice-multiple-answers type with checkboxes
+            if (q.type === "multiple-choice-multiple-answers") {
+                q.options.forEach((option, index) => {
+                    optionsHtml += `
+                        <div class="flex items-center mb-4">
+                            <input type="checkbox" id="option${index}" name="answer" value="${option}" class="w-5 h-5 text-blue-600 focus:ring-blue-500 rounded-md cursor-pointer">
+                            <label for="option${index}" class="ml-3 text-lg font-medium text-gray-800 cursor-pointer">${option}</label>
+                        </div>
+                    `;
+                });
+                // Make instruction text more prominent
+                instructionText = '<p class="text-base font-bold text-gray-700 mt-2">Selecciona todas las opciones correctas y luego haz clic en "Validar Respuesta".</p>';
+            } else { // Handle single choice (radio buttons)
+                q.options.forEach((option, index) => {
+                    optionsHtml += `
+                        <div class="flex items-center mb-4">
+                            <input type="radio" id="option${index}" name="answer" value="${option}" class="w-5 h-5 text-blue-600 focus:ring-blue-500 rounded-full cursor-pointer">
+                            <label for="option${index}" class="ml-3 text-lg font-medium text-gray-800 cursor-pointer">${option}</label>
+                        </div>
+                    `;
+                });
+            }
+
+            questionContainer.innerHTML = `
+                <p class="text-xl font-semibold mb-6 text-gray-900">Pregunta ${currentQuestionIndex + 1} de ${questions.length}:</p>
+                <p class="text-2xl font-bold text-blue-700 mb-8">${q.question.replace(/\n/g, '<br>')}</p>
+                <div id="optionsGroup" class="space-y-4">
+                    ${optionsHtml}
+                </div>
+                ${instructionText}
+                <div id="feedbackMessage" class="mt-6 text-center text-lg font-semibold hidden"></div>
+            `;
+
+            // Get feedbackMessage AFTER it has been rendered into the DOM
+            const feedbackMessage = document.getElementById('feedbackMessage');
+            feedbackMessage.classList.add('hidden'); // Ensure feedback is hidden when new question renders
+
+            // Add event listeners to options
+            const options = document.querySelectorAll('#optionsGroup input[name="answer"]');
+            options.forEach(option => {
+                option.addEventListener('change', (event) => {
+                    // When an option is selected, make sure the 'Validar Respuesta' button is enabled and visible.
+                    if (q.type !== "multiple-choice-multiple-answers") {
+                        actionButton.classList.remove('hidden'); // Show button for single choice
+                        actionButton.disabled = false; // Enable button
+                        actionButton.textContent = "Validar Respuesta"; // Ensure text is "Validar Respuesta"
+                        actionButton.onclick = validateAndShowFeedback; // Set action to validate
+                    } else { // Multi-select: enable if at least one checkbox is checked
+                        const anyChecked = Array.from(document.querySelectorAll('#optionsGroup input[name="answer"]:checked')).length > 0;
+                        if (anyChecked) {
+                            actionButton.classList.remove('hidden');
+                            actionButton.disabled = false;
+                            actionButton.textContent = "Validar Respuesta"; // Ensure text is "Validar Respuesta"
+                            actionButton.onclick = validateAndShowFeedback; // Set action to validate
+                        } else {
+                            actionButton.classList.add('hidden');
+                            actionButton.disabled = true;
+                        }
+                    }
+                });
+            });
+
+            // Ensure the action button is initially hidden and disabled until an answer is selected
+            actionButton.classList.add('hidden');
+            actionButton.disabled = true;
+            actionButton.textContent = "Validar Respuesta"; // Reset text for new question
+            actionButton.onclick = validateAndShowFeedback; // Reset action for new question
+        }
+
+        // Function to validate the current question's answer and show feedback
+        function validateAndShowFeedback() {
+            const q = questions[currentQuestionIndex];
+            const feedbackMessage = document.getElementById('feedbackMessage');
+            const optionsGroup = document.getElementById('optionsGroup');
+            const allOptions = optionsGroup.querySelectorAll('input[name="answer"]');
+
+            // --- IMPORTANT: Prevent re-scoring the same question ---
+            if (currentQuestionValidated) {
+                // If already validated, this click should now trigger advancing to the next question
+                goToNextQuestion();
+                return; 
+            }
+
+            // Disable the button to prevent multiple rapid clicks during validation
+            actionButton.disabled = true; 
+
+            let isCorrect = false;
+            let selectedAnswers = [];
+
+            if (q.type === "multiple-choice-multiple-answers") {
+                selectedAnswers = Array.from(document.querySelectorAll('#optionsGroup input[name="answer"]:checked')).map(input => input.value.trim());
+                
+                if (selectedAnswers.length === 0) {
+                    showModal("Por favor, selecciona al menos una respuesta antes de validar.");
+                    allOptions.forEach(option => { option.disabled = false; }); // Re-enable options
+                    actionButton.disabled = false; // Re-enable button after modal
+                    return; // Stop validation
+                }
+
+                const correctSet = new Set(q.answer.map(ans => ans.trim()));
+                const selectedSet = new Set(selectedAnswers);
+
+                isCorrect = (correctSet.size === selectedSet.size) &&
+                            [...correctSet].every(value => selectedSet.has(value));
+
+            } else { // Single choice (radio buttons)
+                const selectedAnswer = document.querySelector('input[name="answer"]:checked')?.value;
+                if (!selectedAnswer) {
+                    showModal("Por favor, selecciona una respuesta antes de validar.");
+                    allOptions.forEach(option => { option.disabled = false; }); // Re-enable options
+                    actionButton.disabled = false; // Re-enable button after modal
+                    return; // Stop validation
+                }
+                isCorrect = (selectedAnswer.trim() === q.answer.trim());
+            }
+
+            // --- Scoring Logic ---
+            if (isCorrect) {
+                score++; // Increment score by 1 for the entire question
+                feedbackMessage.textContent = "¡Correcto!";
+                feedbackMessage.classList.remove('text-red-600');
+                feedbackMessage.classList.add('text-green-600');
+                correctSound.play();
+            } else {
+                let correctAnswerHtml = '';
+                if (q.type === "multiple-choice-multiple-answers") {
+                    const formattedCorrectAnswers = q.answer.map(ans => `<strong>${ans.replace(/\n/g, '<br>')}</strong>`);
+                    correctAnswerHtml = `Incorrecto. Las respuestas correctas eran:<br>${formattedCorrectAnswers.join('<br>')}`;
+                } else {
+                    correctAnswerHtml = `Incorrecto. La respuesta correcta era: <strong>${q.answer.replace(/\n/g, '<br>')}</strong>`;
+                }
+
+                feedbackMessage.innerHTML = correctAnswerHtml;
+                feedbackMessage.classList.remove('text-green-600');
+                feedbackMessage.classList.add('text-red-600');
+                incorrectSound.play();
+            }
+            feedbackMessage.classList.remove('hidden'); // Ensure feedback is visible
+
+            // Disable all options after showing feedback
+            allOptions.forEach(option => {
+                option.disabled = true;
+            });
+
+            // Mark this question as validated and change button to "Siguiente Pregunta"
+            currentQuestionValidated = true; 
+            actionButton.textContent = "Siguiente Pregunta";
+            actionButton.disabled = false; // Enable button for next step
+            actionButton.onclick = goToNextQuestion; // Set action to go to next question
+        }
+
+        // Function to move to the next question
+        function goToNextQuestion() {
+            currentQuestionIndex++;
+            renderQuestion(); // This will reset the button state for the new question
+        }
+
+        // Function to show results
+        function showResults() {
+            quizSection.classList.add('hidden');
+            resultsSection.classList.remove('hidden');
+            scoreDisplay.textContent = score;
+
+            if (score >= 19) {
+                enrollmentPrompt.classList.remove('hidden');
+            }
+        }
+
+        // Event listener for initial registration form submission
+        registrationForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            userData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value
+            };
+            // Transition to the quiz
+            registrationSection.classList.add('hidden');
+            quizSection.classList.remove('hidden');
+            renderQuestion(); // Start the questionnaire
+        });
+
+        // Event listener to show enrollment form
+        showEnrollmentFormBtn.addEventListener('click', function() {
+            resultsSection.classList.add('hidden');
+            enrollmentSection.classList.remove('hidden');
+            // Pre-fill email if available from initial registration
+            document.getElementById('enrollmentEmail').value = userData.email || '';
+        });
+
+        // Event listener for enrollment form submission
+        enrollmentForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Store enrollment data
+            enrollmentData = {
+                curp: document.getElementById('curp').value.toUpperCase(),
+                course: document.getElementById('course').value,
+                modality: document.getElementById('modality').value,
+                email: document.getElementById('enrollmentEmail').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                comments: document.getElementById('comments').value,
+                paymentProof: document.getElementById('paymentProof').files[0] ? document.getElementById('paymentProof').files[0].name : 'No adjuntado'
+            };
+
+            showModal("¡Se ha inscrito correctamente!");
+
+            // Clear form fields
+            enrollmentForm.reset();
+            document.getElementById('paymentProof').value = '';
+
+            // Show the results section and enrollment prompt (if not already visible)
+            resultsSection.classList.remove('hidden');
+            enrollmentPrompt.classList.remove('hidden');
+
+            // Add the "Generar Comprobante" button
+            let generateReceiptBtn = document.getElementById('generateReceiptBtn');
+            if (!generateReceiptBtn) { // Create if it doesn't exist
+                generateReceiptBtn = document.createElement('button');
+                generateReceiptBtn.id = 'generateReceiptBtn';
+                generateReceiptBtn.textContent = 'Generar Comprobante';
+                generateReceiptBtn.className = 'btn-primary w-full md:w-auto mt-4'; // Add margin top
+                enrollmentPrompt.appendChild(generateReceiptBtn);
+            }
+            generateReceiptBtn.onclick = generateReceipt;
+
+            // Hide the enrollment form
+            enrollmentSection.classList.add('hidden');
+        });
+
+        // Function to generate the receipt
+        function generateReceipt() {
+            const receiptSection = document.getElementById('receiptSection');
+            const receiptDate = document.getElementById('receiptDate');
+            const receiptName = document.getElementById('receiptName');
+            const receiptEmail = document.getElementById('receiptEmail');
+            const receiptPhone = document.getElementById('receiptPhone');
+            const receiptCurp = document.getElementById('receiptCurp');
+            const receiptCourse = document.getElementById('receiptCourse');
+            const receiptModality = document.getElementById('receiptModality');
+            const receiptCity = document.getElementById('receiptCity');
+            const receiptState = document.getElementById('receiptState');
+            const receiptPaymentProof = document.getElementById('receiptPaymentProof');
+            const receiptComments = document.getElementById('receiptComments');
+
+            // Populate receipt data
+            const now = new Date();
+            receiptDate.textContent = now.toLocaleString('es-ES', { dateStyle: 'full', timeStyle: 'medium' });
+            receiptName.textContent = userData.name || 'N/A';
+            receiptEmail.textContent = userData.email || 'N/A';
+            receiptPhone.textContent = userData.phone || 'N/A';
+            receiptCurp.textContent = enrollmentData.curp || 'N/A';
+            receiptCourse.textContent = enrollmentData.course || 'N/A';
+            receiptModality.textContent = enrollmentData.modality || 'N/A';
+            receiptCity.textContent = enrollmentData.city || 'N/A';
+            receiptState.textContent = enrollmentData.state || 'N/A';
+            receiptPaymentProof.textContent = enrollmentData.paymentProof || 'No adjuntado';
+            receiptComments.textContent = enrollmentData.comments || 'Sin comentarios';
+
+            // Temporarily hide other sections for printing
+            document.querySelector('header').classList.add('hidden-for-print');
+            document.querySelector('main').classList.add('hidden-for-print');
+            document.querySelector('footer').classList.add('hidden-for-print');
+            
+            // Explicitly hide all main sections that might be visible
+            registrationSection.classList.add('hidden-for-print');
+            quizSection.classList.add('hidden-for-print');
+            resultsSection.classList.add('hidden-for-print');
+            enrollmentSection.classList.add('hidden-for-print');
+
+            // Show the receipt section
+            receiptSection.classList.remove('hidden');
+
+            // Trigger print dialog
+            window.print();
+
+            // Restore visibility after printing (using afterprint event)
+            window.onafterprint = function() {
+                document.querySelector('header').classList.remove('hidden-for-print');
+                document.querySelector('main').classList.remove('hidden-for-print');
+                document.querySelector('footer').classList.remove('hidden-for-print');
+                
+                // Restore visibility of sections that might have been visible
+                // For a proper flow, you might want to bring back only the section the user was on
+                // but for simplicity, we'll just remove 'hidden-for-print'
+                registrationSection.classList.remove('hidden-for-print');
+                quizSection.classList.remove('hidden-for-print');
+                resultsSection.classList.remove('hidden-for-print');
+                enrollmentSection.classList.remove('hidden-for-print');
+                
+                receiptSection.classList.add('hidden'); // Hide receipt section again
+            };
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            populateStates();
+            // Initially, only the registration section is visible
+            registrationSection.classList.remove('hidden');
+            quizSection.classList.add('hidden');
+            resultsSection.classList.add('hidden');
+            enrollmentSection.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
